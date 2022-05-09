@@ -307,3 +307,17 @@ class EventHandlingError(StorageError):
 
 class ThreadError(StorageError):
     """ An error occurred in a non-main thread. """
+
+# other
+
+
+class FCoEError(StorageError, OSError):
+    pass
+
+
+class ISCSIError(StorageError, OSError):
+    pass
+
+
+class NVMeError(StorageError, OSError):
+    pass
