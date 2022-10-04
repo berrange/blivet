@@ -382,13 +382,15 @@ class DiskLabel(DeviceFormat):
         else:
             self.update_orig_parted_disk()
 
-    def add_partition(self, start, end, ptype=None):
+    def add_partition(self, start, end, ptype=None, part_type_uuid=None):
         """ Add a partition to the disklabel.
 
             :param int start: start sector
             :param int end: end sector
             :param ptype: partition type or None
             :type ptype: int (parted partition type constant) or NoneType
+            :param part_type_uuid: partition type UUID or None
+            :type part_type_uuid: uuid.UUID or NoneType
 
             Partition type will default to either PARTITION_NORMAL or
             PARTITION_LOGICAL, depending on whether the start sector is within
@@ -406,6 +408,9 @@ class DiskLabel(DeviceFormat):
         new_partition = parted.Partition(disk=self.parted_disk,
                                          type=ptype,
                                          geometry=geometry)
+
+        if part_type_uuid is not None:
+            new_partition.type_uuid = part_type_uuid.bytes
 
         constraint = parted.Constraint(exactGeom=geometry)
         self.parted_disk.addPartition(partition=new_partition,
