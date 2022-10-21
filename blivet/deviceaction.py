@@ -636,6 +636,14 @@ class ActionCreateFormat(DeviceAction):
             if self.format.parted_flag is not None:
                 self.device.set_flag(self.format.parted_flag)
 
+            # If an explicit part type UUID is requested against
+            # the partition, that needs to take priority over any
+            # UUID assignment that was done implicitly when the
+            # above unset_flag/set_flag methods were called, or
+            # when the parted_partition.system flag is set.
+            if self.device.part_type_uuid_req is not None:
+                self.device.parted_partition.type_uuid = self.device.part_type_uuid_req.bytes
+
             self.device.disk.format.commit_to_disk()
             udev.settle()
 
